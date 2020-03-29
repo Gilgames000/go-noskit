@@ -8,7 +8,7 @@ type Point struct {
 	Y int
 }
 
-// DistanceFrom returns the distance from two points.
+// DistanceFrom returns the distance between two points.
 func (p1 *Point) DistanceFrom(p2 Point) int {
 	lx := p1.X - p2.X
 	ly := p1.Y - p2.Y
