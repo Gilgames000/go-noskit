@@ -1,9 +1,9 @@
 package actions
 
 import (
-	"fmt"
 	"github.com/gilgames000/go-noskit/entities"
 	"github.com/gilgames000/go-noskit/enums"
+	"github.com/gilgames000/go-noskit/errors"
 )
 
 type BazaarInteractor struct {
@@ -27,30 +27,6 @@ type ItemGateway interface {
 	SearchByVNum(vnum int) (entities.Item, error)
 }
 
-type BazaarInteractionError struct {
-	msg string
-}
-
-func (e BazaarInteractionError) Error() string {
-	return "error while interacting with the bazaar NPC: " + e.msg
-}
-
-type ShopNotFoundError struct {
-	st enums.ShopType
-}
-
-func (e ShopNotFoundError) Error() string {
-	return fmt.Sprintf("there is no Shop with shop type %d on the current map", e.st)
-}
-
-type ItemNotFoundError struct {
-	vnum int
-}
-
-func (e ItemNotFoundError) Error() string {
-	return fmt.Sprintf("there is no item with VNum %d", e.vnum)
-}
-
 // Open checks if there is a NosBazaar NPC on the current map. If there's one,
 // the character will walk to it and Open the bazaar.
 func (bi *BazaarInteractor) Open() error {
@@ -68,16 +44,16 @@ func (bi *BazaarInteractor) Open() error {
 	}
 
 	if !bazaarFound {
-		return &ShopNotFoundError{st: enums.NosBazaar}
+		return &errors.ShopNotFoundError{ShopType: enums.NosBazaar}
 	}
 
 	dist := bi.Map.DistanceBetween(char.Position, bazaarShop.Position)
 	if dist > 3 {
-		return &OutOfRangeError{msg: "the character is too distant from the NosBazaar NPC"}
+		return &errors.OutOfRangeError{Msg: "the character is too distant from the NosBazaar NPC"}
 	}
 
 	if err := bi.Bazaar.Open(); err != nil {
-		return &BazaarInteractionError{msg: err.Error()}
+		return &errors.BazaarInteractionError{Msg: err.Error()}
 	}
 
 	return nil
@@ -93,12 +69,12 @@ func (bi *BazaarInteractor) Close() error {
 
 func (bi *BazaarInteractor) SearchItemByVNumAndPage(vnum int, page int) ([]entities.BazaarItem, error) {
 	if !bi.Bazaar.IsOpen() {
-		return []entities.BazaarItem{}, &BazaarInteractionError{msg: "open the bazaar before searching for items"}
+		return []entities.BazaarItem{}, &errors.BazaarInteractionError{Msg: "open the bazaar before searching for items"}
 	}
 
 	item, err := bi.ItemRepository.SearchByVNum(vnum)
 	if err != nil {
-		return []entities.BazaarItem{}, &ItemNotFoundError{vnum: vnum}
+		return []entities.BazaarItem{}, &errors.ItemNotFoundError{VNum: vnum}
 	}
 
 	if page < 0 {
