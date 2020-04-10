@@ -13,8 +13,8 @@ func TestNPCRequest(t *testing.T) {
 
 	expected := &NPCRequest{
 		EntityType: 2,
-		ShopID:     9255,
-		DialogID:   460,
+		EntityID:   9255,
+		DialogType: 460,
 	}
 
 	out := &NPCRequest{}

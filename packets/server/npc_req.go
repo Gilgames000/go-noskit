@@ -5,8 +5,8 @@ import "github.com/gilgames000/go-noskit/packets"
 // NPCRequest packet
 type NPCRequest struct {
 	EntityType int `json:"entity_type" parser:"'npc_req' @String"`
-	ShopID     int `json:"shop_id"     parser:" @String"`
-	DialogID   int `json:"dialog_id"   parser:" @String"`
+	EntityID   int `json:"shop_id"     parser:" @String"`
+	DialogType int `json:"dialog_id"   parser:" @String"`
 }
 
 // Name of the packet
