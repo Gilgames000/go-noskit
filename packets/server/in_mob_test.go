@@ -8,12 +8,12 @@ import (
 	"github.com/google/go-cmp/cmp"
 )
 
-func TestInMob(t *testing.T) {
+func TestSpawnMob(t *testing.T) {
 	packet := "in 3 24 1878 22 144 2 100 100 0 0 0 -1 1 0 -1 - 2 -1 0 0 0 0 0 0 0 0"
 
 	expected := &SpawnMob{
 		VNum:      24,
-		MobID:     1878,
+		ID:        1878,
 		PositionX: 22,
 		PositionY: 144,
 		Direction: 2,
@@ -33,7 +33,7 @@ func TestInMob(t *testing.T) {
 	}
 }
 
-func TestInMobError(t *testing.T) {
+func TestSpawnMobError(t *testing.T) {
 	packet := "in 3 notanumber"
 
 	out := &SpawnMob{}

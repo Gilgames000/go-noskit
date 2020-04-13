@@ -5,7 +5,7 @@ import "github.com/gilgames000/go-noskit/packets"
 // SpawnMob packet
 type SpawnMob struct {
 	VNum      int `json:"vnum"       parser:"'in' '3' @String"`
-	MobID     int `json:"mob_id"     parser:" @String"`
+	ID        int `json:"id"         parser:" @String"`
 	PositionX int `json:"position_x" parser:" @String"`
 	PositionY int `json:"position_y" parser:" @String"`
 	Direction int `json:"direction"  parser:" @String"`
