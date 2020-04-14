@@ -9,7 +9,7 @@ import (
 // NPCRequest packet
 type NPCRequest struct {
 	EntityType int `json:"entity_type" parser:"'npc_req' @String"`
-	ShopID     int `json:"shop_id"     parser:" @String"`
+	EntityID   int `json:"entity_id"   parser:" @String"`
 }
 
 // Name of the packet
@@ -24,5 +24,5 @@ func (p NPCRequest) Type() packets.PacketType {
 
 // String representation of the packet
 func (p NPCRequest) String() string {
-	return fmt.Sprintf("%s %d %d", p.Name(), p.EntityType, p.ShopID)
+	return fmt.Sprintf("%s %d %d", p.Name(), p.EntityType, p.EntityID)
 }
