@@ -31,7 +31,7 @@ type BazaarItem struct {
 	ListingID   int    `json:"listing_id"`
 	OwnerID     int    `json:"owner_id"`
 	OwnerName   string `json:"owner_name"`
-	ItemID      int    `json:"item_id"`
+	VNum        int    `json:"vnum"`
 	Amount      int    `json:"amount"`
 	IsBundle    int    `json:"is_bundle"`
 	Price       int    `json:"price"`
@@ -69,7 +69,7 @@ func (item *BazaarItem) Parse(lex *lexer.PeekingLexer) error {
 	}{
 		{0, &item.ListingID},
 		{1, &item.OwnerID},
-		{3, &item.ItemID},
+		{3, &item.VNum},
 		{4, &item.Amount},
 		{5, &item.IsBundle},
 		{6, &item.Price},
