@@ -2,6 +2,7 @@ package errors
 
 import (
 	"fmt"
+
 	"github.com/gilgames000/go-noskit/entities"
 	"github.com/gilgames000/go-noskit/enums"
 )
@@ -12,6 +13,14 @@ type BazaarInteractionError struct {
 
 func (e BazaarInteractionError) Error() string {
 	return "error while interacting with the bazaar NPC: " + e.Msg
+}
+
+type NPCNotFoundError struct {
+	NPCID int
+}
+
+func (e NPCNotFoundError) Error() string {
+	return fmt.Sprintf("there is no NPC with ID %d on the current map", e.NPCID)
 }
 
 type ShopNotFoundError struct {
@@ -44,4 +53,11 @@ type PointNotWalkableError struct {
 
 func (e PointNotWalkableError) Error() string {
 	return fmt.Sprintf("can't walk to the point (%d, %d) for it is not walkable", e.Point.X, e.Point.Y)
+}
+
+type CharacterCannotMoveError struct {
+}
+
+func (e CharacterCannotMoveError) Error() string {
+	return "the character is not allowed to move at the moment"
 }
