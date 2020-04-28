@@ -15,49 +15,73 @@ func (e BazaarInteractionError) Error() string {
 	return "error while interacting with the bazaar NPC: " + e.Msg
 }
 
-type NPCNotFoundError struct {
+type NPCNotFound struct {
 	NPCID int
 }
 
-func (e NPCNotFoundError) Error() string {
+func (e NPCNotFound) Error() string {
 	return fmt.Sprintf("there is no NPC with ID %d on the current map", e.NPCID)
 }
 
-type ShopNotFoundError struct {
+type ShopNotFound struct {
 	ShopType enums.ShopType
 }
 
-func (e ShopNotFoundError) Error() string {
+func (e ShopNotFound) Error() string {
 	return fmt.Sprintf("there is no Shop with shop type %d on the current map", e.ShopType)
 }
 
-type ItemNotFoundError struct {
+type ItemNotFound struct {
 	VNum int
 }
 
-func (e ItemNotFoundError) Error() string {
+func (e ItemNotFound) Error() string {
 	return fmt.Sprintf("there is no item with VNum %d", e.VNum)
 }
 
-type OutOfRangeError struct {
-	Msg string
+type CharacterOutOfRange struct {
+	Action string
 }
 
-func (e OutOfRangeError) Error() string {
-	return "character out of range to perform action: " + e.Msg
+func (e CharacterOutOfRange) Error() string {
+	return fmt.Sprintf("the character is out of the minimum range required to perform the requested action (%s)", e.Action)
 }
 
-type PointNotWalkableError struct {
+type PointNotWalkable struct {
 	Point entities.Point
 }
 
-func (e PointNotWalkableError) Error() string {
+func (e PointNotWalkable) Error() string {
 	return fmt.Sprintf("can't walk to the point (%d, %d) for it is not walkable", e.Point.X, e.Point.Y)
 }
 
-type CharacterCannotMoveError struct {
+type CharacterCannotMove struct {
 }
 
-func (e CharacterCannotMoveError) Error() string {
+func (e CharacterCannotMove) Error() string {
 	return "the character is not allowed to move at the moment"
+}
+
+type WrongCharacterStatus struct {
+	Action string
+	Status string
+}
+
+func (e WrongCharacterStatus) Error() string {
+	return fmt.Sprintf("in order to perform the requested action (%s) the character should be in the following status: %s", e.Action, e.Status)
+}
+
+type ConnectionTimedOut struct {
+}
+
+func (e ConnectionTimedOut) Error() string {
+	return "connection timed out"
+}
+
+type LoginFailed struct {
+	ErrorCode string
+}
+
+func (e LoginFailed) Error() string {
+	return fmt.Sprintf("login failed with error code %s", e.ErrorCode)
 }

@@ -4,10 +4,10 @@ import (
 	"reflect"
 	"regexp"
 
+	"github.com/gilgames000/go-noskit/errors"
 	"github.com/gilgames000/go-noskit/packets"
 
 	"github.com/alecthomas/participle"
-	"github.com/pkg/errors"
 )
 
 // NosPacketParser provides a collection of methods to parse nostale packets
