@@ -5,12 +5,27 @@ import (
 	"github.com/gilgames000/go-noskit/packets"
 )
 
-type GameSocket interface {
-	Listen(packetNames ...string) <-chan packets.NosPacket
-	CloseListener(listener <-chan packets.NosPacket)
-	Send(packet string)
+type PacketSender interface {
+	Send(packet ...packets.NosPacketStringer) error
+	SendRaw(packet ...string) error
 }
 
+type PacketReceiver interface {
+	Listen(packetNames ...string) <-chan packets.NosPacket
+	CloseListener(listener <-chan packets.NosPacket)
+}
+
+// GameSocket provides an abstraction over the low-level implementation
+// of the game socket.
+type GameSocket interface {
+	PacketSender
+	PacketReceiver
+	Connect(address string, sessionNumber int) error
+}
+
+// Pathfinder provides an abstraction over the implementation of
+// pathfinding facilities by requiring a walkability grid as the
+// only information needed about the map.
 type Pathfinder interface {
 	FindPath(p1 entities.Point, p2 entities.Point, walkabilityGrid [][]bool) ([]entities.Point, error)
 	DistanceBetween(p1 entities.Point, p2 entities.Point, walkabilityGrid [][]bool) (int, error)

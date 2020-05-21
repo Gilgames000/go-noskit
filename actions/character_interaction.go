@@ -50,11 +50,11 @@ type ShopGateway interface {
 // to move or the specified position is not walkable/reachable.
 func (ci *CharacterInteractor) WalkTo(p entities.Point) error {
 	if !ci.currentMap.IsWalkable(p) {
-		return &errors.PointNotWalkableError{Point: p}
+		return &errors.PointNotWalkable{Point: p}
 	}
 
 	if !ci.character.CanMove() {
-		return &errors.CharacterCannotMoveError{}
+		return &errors.CharacterCannotMove{}
 	}
 
 	return ci.character.WalkTo(p)

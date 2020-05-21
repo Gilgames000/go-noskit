@@ -1,10 +1,10 @@
 package gamestate
 
 import (
-	"github.com/gilgames000/go-noskit/actions"
 	"math"
 	"time"
 
+	"github.com/gilgames000/go-noskit/actions"
 	"github.com/gilgames000/go-noskit/entities"
 	"github.com/gilgames000/go-noskit/enums"
 	"github.com/gilgames000/go-noskit/errors"
@@ -143,15 +143,18 @@ func (cg *CharacterGateway) WalkTo(p entities.Point) error {
 
 func (cg *CharacterGateway) walk(p entities.Point, delay time.Duration) error {
 	if !cg.canMove {
-		return &errors.CharacterCannotMoveError{}
+		return &errors.CharacterCannotMove{}
 	}
 
-	cg.gameSocket.Send(packetclt.Walk{
+	err := cg.gameSocket.Send(packetclt.Walk{
 		X:        p.X,
 		Y:        p.Y,
 		Checksum: ((p.X + p.Y) % 3) % 2,
 		Speed:    cg.character.Speed,
-	}.String())
+	})
+	if err != nil {
+		return err
+	}
 
 	time.Sleep(delay)
 	cg.character.Position = p

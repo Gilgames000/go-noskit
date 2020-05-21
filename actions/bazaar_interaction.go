@@ -20,7 +20,7 @@ type BazaarInteractor struct {
 // perform actions on the NosBazaar.
 type BazaarGateway interface {
 	Open(npcID int) error
-	Close()
+	Close() error
 	IsOpen() bool
 	SearchItemsByVNumAndPage(vnums []int, page int) ([]entities.BazaarItem, error)
 }
@@ -38,12 +38,12 @@ type ItemGateway interface {
 func (bi *BazaarInteractor) Open() error {
 	bazaarShop, ok := bi.shops.SearchByShopType(enums.NosBazaar)
 	if !ok {
-		return &errors.ShopNotFoundError{ShopType: enums.NosBazaar}
+		return &errors.ShopNotFound{ShopType: enums.NosBazaar}
 	}
 
 	bazaarNPC, ok := bi.npcs.SearchByID(bazaarShop.OwnerID)
 	if !ok {
-		return &errors.NPCNotFoundError{NPCID: bazaarShop.OwnerID}
+		return &errors.NPCNotFound{NPCID: bazaarShop.OwnerID}
 	}
 
 	dist, err := bi.currentMap.DistanceBetween(bi.character.Info().Position, bazaarNPC.Position)
@@ -51,7 +51,7 @@ func (bi *BazaarInteractor) Open() error {
 		return err
 	}
 	if dist > 3 {
-		return &errors.OutOfRangeError{Msg: "the character is too distant from the NosBazaar NPC"}
+		return &errors.CharacterOutOfRange{Action: "open NosBazaar NPC"}
 	}
 
 	if err := bi.bazaar.Open(bazaarNPC.ID); err != nil {
@@ -62,12 +62,12 @@ func (bi *BazaarInteractor) Open() error {
 }
 
 // Close will close the bazaar if it's currently open.
-func (bi *BazaarInteractor) Close() {
+func (bi *BazaarInteractor) Close() error {
 	if !bi.bazaar.IsOpen() {
-		return
+		return nil
 	}
 
-	bi.bazaar.Close()
+	return bi.bazaar.Close()
 }
 
 // SearchItemByVNumAndPage lets lets you search for an item in the bazaar
@@ -79,7 +79,7 @@ func (bi *BazaarInteractor) SearchItemByVNumAndPage(vnum int, page int) ([]entit
 
 	item, err := bi.itemRepository.SearchByVNum(vnum)
 	if err != nil {
-		return []entities.BazaarItem{}, &errors.ItemNotFoundError{VNum: vnum}
+		return []entities.BazaarItem{}, &errors.ItemNotFound{VNum: vnum}
 	}
 
 	if page < 0 {
