@@ -3,8 +3,9 @@ package packetsrv
 import (
 	"testing"
 
-	"github.com/alecthomas/participle"
 	"github.com/gilgames000/go-noskit/packets/parser"
+
+	"github.com/alecthomas/participle"
 	"github.com/google/go-cmp/cmp"
 )
 

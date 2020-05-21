@@ -3,8 +3,9 @@ package packetsrv
 import (
 	"testing"
 
-	"github.com/alecthomas/participle"
 	"github.com/gilgames000/go-noskit/packets/parser"
+
+	"github.com/alecthomas/participle"
 	"github.com/google/go-cmp/cmp"
 )
 
@@ -59,7 +60,6 @@ func TestBazaarBuyListResults(t *testing.T) {
 	).ParseString(packet, out)
 
 	if !cmp.Equal(out, expected) || err != nil {
-
 		t.Errorf("\nrc_blist packet parsing failed\npacket: %+v\nexpected: %+v\nparsed: %+v\nerror: %+v", packet, expected, out, err)
 	}
 }
@@ -80,7 +80,6 @@ func TestBazaarEmptyBuyList(t *testing.T) {
 	).ParseString(packet, out)
 
 	if out.PageIndex != 0 || len(out.Items) != 0 || err != nil {
-
 		t.Errorf("\nrc_blist packet parsing failed\npacket: %+v\nexpected: %+v\nparsed: %+v\nerror: %+v", packet, expected, out, err)
 	}
 }
