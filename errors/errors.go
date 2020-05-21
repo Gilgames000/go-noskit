@@ -85,3 +85,12 @@ type LoginFailed struct {
 func (e LoginFailed) Error() string {
 	return fmt.Sprintf("login failed with error code %s", e.ErrorCode)
 }
+
+type JoinGameFailed struct {
+	Slot    int
+	Message string
+}
+
+func (e JoinGameFailed) Error() string {
+	return fmt.Sprintf("failed to join the game with character in slot %d: %s", e.Slot, e.Message)
+}

@@ -8,8 +8,9 @@ import (
 
 // BazaarInteractor lets you interact with the logged-in character.
 type CharacterInteractor struct {
-	character  CharacterGateway
-	currentMap MapGateway
+	character        CharacterGateway
+	currentMap       MapGateway
+	characterManager CharacterManagementGateway
 }
 
 // CharacterGateway provides an abstraction over low-level methods used to
@@ -19,6 +20,13 @@ type CharacterGateway interface {
 	WalkTo(p entities.Point) error
 	CanMove() bool
 	CanAttack() bool
+}
+
+// CharacterManagementGateway provides an abstraction over low-level methods used to
+// manage the characters on the logged-in account.
+type CharacterManagementGateway interface {
+	JoinGame(slot int) error
+	CurrentStatus() enums.CharacterStatus
 }
 
 // MapGateway provides information and methods related to the structure
@@ -58,4 +66,16 @@ func (ci *CharacterInteractor) WalkTo(p entities.Point) error {
 	}
 
 	return ci.character.WalkTo(p)
+}
+
+// JoinGame joins the game with the character in the selected slot.
+func (ci *CharacterInteractor) JoinGame(slot int) error {
+	if ci.characterManager.CurrentStatus() != enums.CharacterSelection {
+		return errors.WrongCharacterStatus{
+			Action: "join game",
+			Status: "character selection",
+		}
+	}
+
+	return ci.characterManager.JoinGame(slot)
 }
