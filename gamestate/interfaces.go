@@ -21,6 +21,8 @@ type GameSocket interface {
 	PacketSender
 	PacketReceiver
 	Connect(address string, sessionNumber int) error
+	Disconnect() error
+	IsConnected() bool
 }
 
 // Pathfinder provides an abstraction over the implementation of

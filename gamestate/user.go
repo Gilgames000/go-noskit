@@ -24,6 +24,8 @@ type LoginSocket interface {
 	PacketSender
 	PacketReceiver
 	Connect(address string) error
+	Disconnect() error
+	IsConnected() bool
 }
 
 type UserGateway struct {
@@ -104,6 +106,8 @@ func (ug *UserGateway) ConnectToLoginServer(user actions.User, loginCode, addres
 			Channels: endpoints[k],
 		})
 	}
+
+	err = ug.loginSocket.Disconnect()
 
 	return accountName, sessionID, servers, err
 }
