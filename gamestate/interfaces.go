@@ -11,7 +11,7 @@ type PacketSender interface {
 }
 
 type PacketReceiver interface {
-	NewListener(packetNames ...string) <-chan packets.NosPacket
+	NewListener(packetNames ...string) chan packets.NosPacket
 	CloseListener(listener chan packets.NosPacket)
 }
 
@@ -29,8 +29,8 @@ type GameSocket interface {
 // pathfinding facilities by requiring a walkability grid as the
 // only information needed about the map.
 type Pathfinder interface {
-	FindPath(p1 entities.Point, p2 entities.Point, walkabilityGrid [][]bool) ([]entities.Point, error)
-	DistanceBetween(p1 entities.Point, p2 entities.Point, walkabilityGrid [][]bool) (int, error)
+	FindPath(p1, p2 entities.Point, walkabilityGrid [][]bool) ([]entities.Point, error)
+	DistanceBetween(p1, p2 entities.Point, walkabilityGrid [][]bool) (int, error)
 }
 
 type ItemDataStore interface {
