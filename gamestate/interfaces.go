@@ -11,8 +11,8 @@ type PacketSender interface {
 }
 
 type PacketReceiver interface {
-	Listen(packetNames ...string) <-chan packets.NosPacket
-	CloseListener(listener <-chan packets.NosPacket)
+	NewListener(packetNames ...string) <-chan packets.NosPacket
+	CloseListener(listener chan packets.NosPacket)
 }
 
 // GameSocket provides an abstraction over the low-level implementation

@@ -57,7 +57,7 @@ func (ug *UserGateway) ConnectToLoginServer(user actions.User, loginCode, addres
 		return accountName, sessionID, servers, err
 	}
 
-	ln := ug.loginSocket.Listen([]string{
+	ln := ug.loginSocket.NewListener([]string{
 		packetsrv.NsTeST{}.Name(),
 		packetsrv.ConnectionFailure{}.Name(),
 	}...)
@@ -118,7 +118,7 @@ func (ug *UserGateway) ConnectToGameServer(sessionNum, serverNum int, accountNam
 		return characters, err
 	}
 
-	ln := ug.gameSocket.Listen([]string{
+	ln := ug.gameSocket.NewListener([]string{
 		packetsrv.CharacterListItem{}.Name(),
 		packetsrv.Fail{}.Name(),
 		packetsrv.CharacterListEnd{}.Name(),

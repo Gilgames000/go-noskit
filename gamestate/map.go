@@ -28,7 +28,7 @@ func NewMapGateway(gameSocket GameSocket, mapDataStore MapDataStore, pathfinder 
 }
 
 func (mg *MapGateway) updater() {
-	l := mg.gameSocket.Listen([]string{
+	l := mg.gameSocket.NewListener([]string{
 		packetsrv.CharacterPosition{}.Name(),
 	}...)
 	defer mg.gameSocket.CloseListener(l)

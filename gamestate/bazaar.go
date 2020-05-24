@@ -20,7 +20,7 @@ type BazaarGateway struct {
 }
 
 func (bg *BazaarGateway) Open(npcID int) error {
-	req := bg.gameSocket.Listen(packetsrv.NPCRequest{}.Name())
+	req := bg.gameSocket.NewListener(packetsrv.NPCRequest{}.Name())
 	defer bg.gameSocket.CloseListener(req)
 
 	err := bg.gameSocket.Send(packetclt.NPCRequest{
@@ -39,7 +39,7 @@ func (bg *BazaarGateway) Open(npcID int) error {
 	}
 	time.Sleep(1 * time.Second)
 
-	wop := bg.gameSocket.Listen(packetsrv.WindowOpen{}.Name())
+	wop := bg.gameSocket.NewListener(packetsrv.WindowOpen{}.Name())
 	defer bg.gameSocket.CloseListener(wop)
 
 	err = bg.gameSocket.Send(packetclt.NPCRunAction{
@@ -60,7 +60,7 @@ func (bg *BazaarGateway) Open(npcID int) error {
 	}
 	time.Sleep(1 * time.Second)
 
-	res := bg.gameSocket.Listen(packetsrv.BazaarSearchResults{}.Name())
+	res := bg.gameSocket.NewListener(packetsrv.BazaarSearchResults{}.Name())
 	defer bg.gameSocket.CloseListener(res)
 
 	err = bg.gameSocket.Send(packetclt.SearchBazaar{})
@@ -99,7 +99,7 @@ func (bg *BazaarGateway) SearchItemsByVNumAndPage(vnums []int, page int) ([]enti
 	var items []entities.BazaarItem
 	var res packetsrv.BazaarSearchResults
 
-	l := bg.gameSocket.Listen(packetsrv.BazaarSearchResults{}.Name())
+	l := bg.gameSocket.NewListener(packetsrv.BazaarSearchResults{}.Name())
 	defer bg.gameSocket.CloseListener(l)
 
 	err := bg.gameSocket.Send(packetclt.SearchBazaar{

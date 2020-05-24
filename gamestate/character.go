@@ -37,7 +37,7 @@ func NewCharacterGateway(gameSocket GameSocket, mapDataStore MapDataStore, pathf
 }
 
 func (cg *CharacterGateway) updater() {
-	l := cg.gameSocket.Listen([]string{
+	l := cg.gameSocket.NewListener([]string{
 		packetsrv.CharacterInfo{}.Name(),
 		packetsrv.CharacterStatus{}.Name(),
 		packetsrv.CharacterLevel{}.Name(),

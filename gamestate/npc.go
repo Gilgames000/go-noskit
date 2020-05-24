@@ -25,7 +25,7 @@ func NewNPCGateway(gameSocket GameSocket) *NPCGateway {
 }
 
 func (ng *NPCGateway) updater() {
-	l := ng.gameSocket.Listen([]string{
+	l := ng.gameSocket.NewListener([]string{
 		packetsrv.SpawnNPC{}.Name(),
 	}...)
 	defer ng.gameSocket.CloseListener(l)

@@ -19,7 +19,7 @@ type CharacterManagementGateway struct {
 }
 
 func (cmg *CharacterManagementGateway) JoinGame(slot int) error {
-	ln := cmg.gameSocket.Listen([]string{
+	ln := cmg.gameSocket.NewListener([]string{
 		packetsrv.OK{}.Name(),
 		packetsrv.Info{}.Name(),
 	}...)

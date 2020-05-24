@@ -26,7 +26,7 @@ func NewShopGateway(gameSocket GameSocket) *ShopGateway {
 }
 
 func (sg *ShopGateway) updater() {
-	l := sg.gameSocket.Listen([]string{
+	l := sg.gameSocket.NewListener([]string{
 		packetsrv.Shop{}.Name(),
 	}...)
 	defer sg.gameSocket.CloseListener(l)
