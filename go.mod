@@ -3,6 +3,7 @@ module github.com/gilgames000/go-noskit
 go 1.14
 
 require (
+	github.com/SolarLune/paths v0.0.0-20190106103957-acfca40d365f
 	github.com/alecthomas/participle v0.4.1
 	github.com/elazarl/goproxy v0.0.0-20200424133023-84349a151dd4 // indirect
 	github.com/gilgames000/go-noscrypto v0.0.0-20190515120617-7096d4f3eee5

@@ -55,6 +55,20 @@ func (e PointNotWalkable) Error() string {
 	return fmt.Sprintf("can't walk to the point (%d, %d) for it is not walkable", e.Point.X, e.Point.Y)
 }
 
+type NoPathToPoint struct {
+	From, To entities.Point
+}
+
+func (e NoPathToPoint) Error() string {
+	return fmt.Sprintf(
+		"there's no valid path between (%d, %d) and (%d, %d)",
+		e.From.X,
+		e.From.Y,
+		e.To.X,
+		e.To.Y,
+	)
+}
+
 type CharacterCannotMove struct {
 }
 
