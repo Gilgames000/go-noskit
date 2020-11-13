@@ -104,7 +104,7 @@ func (ls *LoginSocket) NewListener(packetNames ...string) <-chan packets.NosPack
 	return ls.packetsPubSub.Subscribe(packetNames...)
 }
 
-func (ls *LoginSocket) CloseListener(listener chan packets.NosPacket) {
+func (ls *LoginSocket) CloseListener(listener <-chan packets.NosPacket) {
 	ls.packetsPubSub.Unsubscribe(listener)
 }
 

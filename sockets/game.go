@@ -116,7 +116,7 @@ func (gs *GameSocket) NewListener(packetNames ...string) <-chan packets.NosPacke
 	return gs.packetsPubSub.Subscribe(packetNames...)
 }
 
-func (gs *GameSocket) CloseListener(listener chan packets.NosPacket) {
+func (gs *GameSocket) CloseListener(listener <-chan packets.NosPacket) {
 	gs.packetsPubSub.Unsubscribe(listener)
 }
 

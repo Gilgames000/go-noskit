@@ -27,7 +27,7 @@ func (ps *NosPacketPubSub) Subscribe(packetNames ...string) <-chan packets.NosPa
 	return ln
 }
 
-func (ps *NosPacketPubSub) Unsubscribe(subscriber chan packets.NosPacket) {
+func (ps *NosPacketPubSub) Unsubscribe(subscriber <-chan packets.NosPacket) {
 	var idx int
 
 	ps.mtx.Lock()
@@ -42,7 +42,6 @@ func (ps *NosPacketPubSub) Unsubscribe(subscriber chan packets.NosPacket) {
 			}
 		}
 	}
-	close(subscriber)
 	ps.mtx.Unlock()
 }
 
