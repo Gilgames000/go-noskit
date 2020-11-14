@@ -5,6 +5,7 @@ import (
 	"time"
 
 	"github.com/gilgames000/go-noskit/actions"
+	"github.com/gilgames000/go-noskit/enums"
 	"github.com/gilgames000/go-noskit/errors"
 	packetclt "github.com/gilgames000/go-noskit/packets/client"
 	packetsrv "github.com/gilgames000/go-noskit/packets/server"
@@ -35,6 +36,15 @@ type UserGateway struct {
 	gameClientInfo GameClientGateway
 }
 
+func NewUserGateway(gfClient GFClient, loginSocket LoginSocket, gameSocket GameSocket, gameClientInfo GameClientGateway) *UserGateway {
+	return &UserGateway{
+		gfClient:       gfClient,
+		loginSocket:    loginSocket,
+		gameSocket:     gameSocket,
+		gameClientInfo: gameClientInfo,
+	}
+}
+
 // GameClientGateway provides methods to retrieve information about
 // the real game client.
 type GameClientGateway interface {
@@ -51,7 +61,7 @@ func (ug *UserGateway) AuthenticateGFClient(user actions.User, serverLang string
 	return ug.gfClient.GetLoginCodeHex(user, token, accountID)
 }
 
-func (ug *UserGateway) ConnectToLoginServer(user actions.User, loginCode, address string, serverNum int) (accountName string, sessionID int, servers []actions.GameServer, err error) {
+func (ug *UserGateway) ConnectToLoginServer(user actions.User, loginCode, address string, countryID enums.CountryID) (accountName string, sessionID int, servers []actions.GameServer, err error) {
 	err = ug.loginSocket.Connect(address)
 	if err != nil {
 		return accountName, sessionID, servers, err
@@ -67,7 +77,7 @@ func (ug *UserGateway) ConnectToLoginServer(user actions.User, loginCode, addres
 		LoginCode:        loginCode,
 		InstallationUUID: user.InstallationUUID,
 		RandomHex:        "0043BA6F", // TODO: randomize
-		ServerNumber:     serverNum,
+		CountryID:        int(countryID),
 		ClientVersion:    ug.gameClientInfo.Version(),
 		ClientHash:       ug.gameClientInfo.Hash(),
 	})
@@ -112,7 +122,7 @@ func (ug *UserGateway) ConnectToLoginServer(user actions.User, loginCode, addres
 	return accountName, sessionID, servers, err
 }
 
-func (ug *UserGateway) ConnectToGameServer(sessionNum, serverNum int, accountName, address string) (characters []actions.AccountCharacter, err error) {
+func (ug *UserGateway) ConnectToGameServer(sessionNum int, countryID enums.CountryID, accountName, address string) (characters []actions.AccountCharacter, err error) {
 	err = ug.gameSocket.Connect(address, sessionNum)
 	if err != nil {
 		return characters, err
@@ -125,7 +135,7 @@ func (ug *UserGateway) ConnectToGameServer(sessionNum, serverNum int, accountNam
 	}...)
 	defer ug.gameSocket.CloseListener(ln)
 
-	err = ug.gameSocket.SendRaw(fmt.Sprintf("%s GF %d", accountName, serverNum))
+	err = ug.gameSocket.SendRaw(fmt.Sprintf("%s GF %d", accountName, countryID))
 	if err != nil {
 		return characters, err
 	}

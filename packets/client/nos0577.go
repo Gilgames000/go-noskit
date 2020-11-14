@@ -11,7 +11,7 @@ type NoS0577 struct {
 	LoginCode        string `json:"login_code"`
 	InstallationUUID string `json:"installation_uuid"`
 	RandomHex        string `json:"random_hex"`
-	ServerNumber     int    `json:"server_number"`
+	CountryID        int    `json:"country_id"`
 	ClientVersion    string `json:"client_version"`
 	ClientHash       string `json:"client_hash"`
 }
@@ -33,7 +33,7 @@ func (p NoS0577) String() string {
 		p.LoginCode,
 		p.InstallationUUID,
 		p.RandomHex,
-		p.ServerNumber,
+		p.CountryID,
 		p.ClientVersion,
 		p.ClientHash)
 }
