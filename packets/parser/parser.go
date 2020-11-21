@@ -94,17 +94,18 @@ func (p *NosPacketParser) parsePacket(rawPacket string, packetType packets.Packe
 		return nil, errors.Errorf("unknown packet: '%s'", rawPacket)
 	}
 
-	packetStruct := reflect.New(packetStructType).Interface().(packets.NosPacket)
+	packetStructPtr := reflect.New(packetStructType)
 	packetParser, ok := parsers[packetName]
 	if !ok {
 		packetParser = participle.MustBuild(
-			packetStruct,
+			packetStructPtr.Interface(),
 			participle.Lexer(NosLexer()),
 			participle.Elide("Whitespace"),
 		)
 	}
 
-	err := packetParser.ParseString(rawPacket, packetStruct)
+	err := packetParser.ParseString(rawPacket, packetStructPtr.Interface())
+	packetStruct := packetStructPtr.Elem().Interface().(packets.NosPacket)
 
 	return packetStruct, err
 }

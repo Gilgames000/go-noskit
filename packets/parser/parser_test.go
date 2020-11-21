@@ -56,17 +56,17 @@ func TestNosPacketParser(t *testing.T) {
 	parser.RegisterPacket(MockPacket2{})
 	parser.RegisterPacket(MockPacket3{})
 
-	expected1 := &MockPacket1{
+	expected1 := MockPacket1{
 		Field1: 5,
 		Field2: 20,
 	}
 
-	expected2 := &MockPacket2{
+	expected2 := MockPacket2{
 		Field1: 20,
 		Field2: 30,
 	}
 
-	expected3 := &MockPacket3{
+	expected3 := MockPacket3{
 		Field1: "",
 	}
 
