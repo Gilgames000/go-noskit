@@ -34,14 +34,6 @@ func TestNsTeST(t *testing.T) {
 				ChannelNumber:   1,
 				ServerName:      "UK-NosCitadel",
 			},
-			{
-				Address:         "-1",
-				Port:            -1,
-				ChannelColor:    -1,
-				ChannelFullness: 10000,
-				ChannelNumber:   10000,
-				ServerName:      "1",
-			},
 		},
 	}
 

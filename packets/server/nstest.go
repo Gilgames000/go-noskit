@@ -81,5 +81,22 @@ func (se *ServerEndpoint) Parse(lex *lexer.PeekingLexer) error {
 
 	se.ServerName = split[2]
 
+	// Discard "-1:-1:-1:10000.10000.1" at the end of the packet
+	token, err = lex.Peek(0)
+	if err != nil {
+		return err
+	}
+
+	if token.EOF() {
+		return errors.New("EOF reached")
+	}
+
+	split = strings.Split(token.Value, ":")
+
+	if split[0] == "-1" {
+		_, err = lex.Next()
+		return err
+	}
+
 	return nil
 }
