@@ -21,12 +21,12 @@ type GFClient struct {
 // server response's status code is not 201 (session created), or the response
 // body (JSON) can't be parsed.
 // The user needs to be authenticated in order to request a login code.
-func (c *GFClient) Authenticate(user actions.User, serverLang string) (string, string, error) {
+func (c *GFClient) Authenticate(user actions.User, serverLang string) (token string, accountID string, err error) {
 	url := "https://spark.gameforge.com/api/v1/auth/thin/sessions"
 	reqBody := fmt.Sprintf(
 		`{"gfLang":"%s","identity":"%s","locale":"%s","password":"%s","platformGameId":"dd4e22d6-00d1-44b9-8126-d8b40e0cd7c9"}`,
 		serverLang,
-		user.Email,
+		user.Username, // we use username instead of email so we get the old auth api TODO: update to latest gf api
 		user.Locale,
 		user.Password,
 	)
@@ -70,12 +70,12 @@ func (c *GFClient) Authenticate(user actions.User, serverLang string) (string, s
 
 	token, ok := b["token"].(string)
 	if !ok {
-		return "", "", errors.New("couldn't fetch token from server response")
+		return "", "", errors.New(fmt.Sprintf("couldn't fetch token from server response\nserver response: %s", body))
 	}
 
-	accountID, ok := b["platformGameAccountId"].(string)
+	accountID, ok = b["platformGameAccountId"].(string)
 	if !ok {
-		return "", "", errors.New("couldn't fetch accountID from server response")
+		return "", "", errors.New(fmt.Sprintf("couldn't fetch accountID from server response\nserver response: %s", body))
 	}
 
 	return token, accountID, nil

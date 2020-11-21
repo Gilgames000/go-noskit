@@ -64,7 +64,7 @@ func (ug *UserGateway) AuthenticateGFClient(user actions.User, serverLang string
 func (ug *UserGateway) ConnectToLoginServer(user actions.User, loginCode, address string, countryID enums.CountryID) (accountName string, sessionID int, servers []actions.GameServer, err error) {
 	err = ug.loginSocket.Connect(address)
 	if err != nil {
-		return accountName, sessionID, servers, err
+		return "", -1, []actions.GameServer{}, err
 	}
 
 	ln := ug.loginSocket.NewListener([]string{
@@ -82,7 +82,7 @@ func (ug *UserGateway) ConnectToLoginServer(user actions.User, loginCode, addres
 		ClientHash:       ug.gameClientInfo.Hash(),
 	})
 	if err != nil {
-		return accountName, sessionID, servers, err
+		return "", -1, []actions.GameServer{}, err
 	}
 
 	endpoints := make(map[string][]actions.ServerChannel)

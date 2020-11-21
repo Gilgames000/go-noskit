@@ -13,7 +13,7 @@ import (
 // NsTeST packet
 type NsTeST struct {
 	ServerNumber int              `json:"server_number" parser:"'NsTeST' @String"`
-	Username     string           `json:"username" parser:"@String"`
+	Username     string           `json:"username"      parser:"@String"`
 	Unknown      int              `json:"unknown"       parser:"@String"`
 	SessionID    int              `json:"session_id"    parser:"@String"`
 	Endpoints    []ServerEndpoint `json:"endpoints"     parser:"@@*"`

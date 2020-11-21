@@ -6,16 +6,15 @@ import (
 	"fmt"
 	"math/rand"
 	"net"
-	"strconv"
 	"strings"
 	"sync"
+	"time"
 
+	"github.com/gilgames000/go-noscrypto/pkg/noscryptoclt"
 	"github.com/gilgames000/go-noskit/errors"
 	"github.com/gilgames000/go-noskit/gamestate"
 	"github.com/gilgames000/go-noskit/packets"
 	"github.com/gilgames000/go-noskit/packets/parser"
-
-	"github.com/gilgames000/go-noscrypto/pkg/noscryptoclt"
 )
 
 var _ gamestate.GameSocket = &GameSocket{}
@@ -31,11 +30,11 @@ type GameSocket struct {
 	sessionNumber int
 	packetNumber  uint16
 
-	parser        parser.NosPacketParser
+	parser        *parser.NosPacketParser
 	packetsPubSub *NosPacketPubSub
 }
 
-func NewGameSocket(parser parser.NosPacketParser) *GameSocket {
+func NewGameSocket(parser *parser.NosPacketParser) *GameSocket {
 	return &GameSocket{
 		parser:        parser,
 		packetsPubSub: NewNosPacketPubSub(),
@@ -52,9 +51,11 @@ func (gs *GameSocket) Connect(address string, sessionNumber int) error {
 		return errors.Wrap(err, "failed to connect to the game server")
 	}
 
-	gs.packetNumber = uint16(rand.Intn(65535))
-	sessionPacket := noscryptoclt.EncryptSessionPacket(strconv.Itoa(sessionNumber))
-	conn.Write([]byte(sessionPacket))
+	gs.packetNumber = uint16(rand.New(rand.NewSource(time.Now().UnixNano())).Intn(65535))
+	gs.sessionNumber = sessionNumber
+	sessionPacket := fmt.Sprintf("%d %d", gs.packetNumber, sessionNumber)
+	encryptedSessionPacket := noscryptoclt.EncryptSessionPacket(sessionPacket)
+	conn.Write([]byte(encryptedSessionPacket))
 	gs.packetNumber++
 
 	gs.conn = conn
@@ -126,6 +127,7 @@ func (gs *GameSocket) sender() {
 		case p := <-gs.packetsToBeSent:
 			packet := fmt.Sprintf("%d %s", gs.packetNumber, p)
 			encryptedPacket := noscryptoclt.EncryptGamePacket(packet, gs.sessionNumber)
+			time.Sleep(150 * time.Millisecond)
 			gs.conn.Write([]byte(encryptedPacket))
 			gs.packetNumber++
 		case <-gs.done:
