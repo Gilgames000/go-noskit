@@ -1,6 +1,10 @@
 package actions
 
-import "github.com/gilgames000/go-noskit/enums"
+import (
+	"fmt"
+
+	"github.com/gilgames000/go-noskit/enums"
+)
 
 // User holds the information about the current user.
 type User struct {
@@ -13,7 +17,10 @@ type User struct {
 
 // UserInteractor lets you interact with the current user.
 type UserInteractor struct {
-	user UserGateway
+	user          UserGateway
+	countryID     enums.CountryID
+	accountName   string
+	sessionNumber int
 }
 
 func NewUserInteractor(userGateway UserGateway) *UserInteractor {
@@ -59,9 +66,64 @@ type AccountCharacter struct {
 	Name string
 }
 
-func (ui *UserInteractor) Login(user User, serverLang string, countryID enums.CountryID) []GameServer {
-	panic("implement me")
+func (ui *UserInteractor) Login(user User, serverLang string, countryID enums.CountryID) ([]GameServer, error) {
+	loginCode, err := ui.user.AuthenticateGFClient(user, serverLang)
+	if err != nil {
+		return []GameServer{}, err
+	}
+
+	accountName, sessionNum, servers, err := ui.user.ConnectToLoginServer(
+		user,
+		loginCode,
+		"login.nostale.gfsrv.net:"+getLoginPort(countryID),
+		countryID,
+	)
+	if err != nil {
+		return []GameServer{}, err
+	}
+
+	ui.countryID = countryID
+	ui.accountName = accountName
+	ui.sessionNumber = sessionNum
+
+	return servers, err
 }
-func (ui *UserInteractor) Connect(user User, serverLang string) []GameServer {
-	panic("implement me")
+
+func (ui *UserInteractor) Connect(channel ServerChannel) ([]AccountCharacter, error) {
+	characters, err := ui.user.ConnectToGameServer(
+		ui.sessionNumber,
+		ui.countryID,
+		ui.accountName,
+		fmt.Sprintf("%s:%d", channel.Address, channel.Port),
+	)
+	if err != nil {
+		return []AccountCharacter{}, err
+	}
+
+	return characters, err
+}
+
+func getLoginPort(countryID enums.CountryID) string {
+	switch countryID {
+	case enums.EN:
+		return enums.LoginPortEN
+	case enums.DE:
+		return enums.LoginPortDE
+	case enums.FR:
+		return enums.LoginPortFR
+	case enums.IT:
+		return enums.LoginPortIT
+	case enums.PL:
+		return enums.LoginPortPL
+	case enums.ES:
+		return enums.LoginPortES
+	case enums.CZ:
+		return enums.LoginPortCZ
+	case enums.RU:
+		return enums.LoginPortRU
+	case enums.TR:
+		return enums.LoginPortTR
+	default:
+		return ""
+	}
 }
