@@ -18,6 +18,23 @@ type CharacterManagementGateway struct {
 	status     enums.CharacterStatus
 }
 
+func (cmg *CharacterManagementGateway) updater() {
+	l := cmg.gameSocket.NewListener([]string{
+		packetsrv.CharacterListItem{}.Name(),
+		packetsrv.CharacterListEnd{}.Name(),
+	}...)
+	defer cmg.gameSocket.CloseListener(l)
+
+	for {
+		packet := <-l
+		switch packet.(type) {
+		case packetsrv.CharacterListEnd:
+			cmg.status = enums.CharacterSelection
+		default:
+		}
+	}
+}
+
 func (cmg *CharacterManagementGateway) JoinGame(slot int) error {
 	ln := cmg.gameSocket.NewListener([]string{
 		packetsrv.OK{}.Name(),
