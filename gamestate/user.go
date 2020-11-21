@@ -97,6 +97,7 @@ func (ug *UserGateway) ConnectToLoginServer(user actions.User, loginCode, addres
 				endpoints[ep.ServerName] = append(current, actions.ServerChannel{
 					Number:  ep.ChannelNumber,
 					Address: ep.Address,
+					Port:    ep.Port,
 				})
 			}
 		case packetsrv.ConnectionFailure:

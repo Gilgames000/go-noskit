@@ -49,6 +49,7 @@ type GameServer struct {
 type ServerChannel struct {
 	Number  int
 	Address string
+	Port    int
 }
 
 // AccountCharacter holds the information about a character on the logged-in
