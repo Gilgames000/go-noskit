@@ -18,6 +18,14 @@ type CharacterManagementGateway struct {
 	status     enums.CharacterStatus
 }
 
+func NewCharacterManagementGateway(gameSocket GameSocket) *CharacterManagementGateway {
+	characterManagementGateway := &CharacterManagementGateway{gameSocket: gameSocket}
+
+	go characterManagementGateway.updater()
+
+	return characterManagementGateway
+}
+
 func (cmg *CharacterManagementGateway) updater() {
 	l := cmg.gameSocket.NewListener([]string{
 		packetsrv.CharacterListItem{}.Name(),

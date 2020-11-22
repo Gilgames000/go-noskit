@@ -16,6 +16,17 @@ type BazaarInteractor struct {
 	shops          ShopGateway
 }
 
+func NewBazaarInteractor(itemRepository ItemGateway, bazaar BazaarGateway, character CharacterGateway, currentMap MapGateway, npcs NPCGateway, shops ShopGateway) *BazaarInteractor {
+	return &BazaarInteractor{
+		itemRepository: itemRepository,
+		bazaar:         bazaar,
+		character:      character,
+		currentMap:     currentMap,
+		npcs:           npcs,
+		shops:          shops,
+	}
+}
+
 // BazaarGateway provides an abstraction over low-level methods used to
 // perform actions on the NosBazaar.
 type BazaarGateway interface {
