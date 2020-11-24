@@ -13,6 +13,14 @@ type CharacterInteractor struct {
 	characterManager CharacterManagementGateway
 }
 
+func NewCharacterInteractor(character CharacterGateway, currentMap MapGateway, characterManager CharacterManagementGateway) *CharacterInteractor {
+	return &CharacterInteractor{
+		character:        character,
+		currentMap:       currentMap,
+		characterManager: characterManager,
+	}
+}
+
 // CharacterGateway provides an abstraction over low-level methods used to
 // perform actions with the logged-in character.
 type CharacterGateway interface {
