@@ -59,12 +59,12 @@ func calculatePath(p1, p2 entities.Point, walkabilityGrid [][]bool) *paths.Path 
 }
 
 func fillGrid(walkabilityGrid [][]bool) *paths.Grid {
-	w := len(walkabilityGrid[0])
-	h := len(walkabilityGrid)
+	h := len(walkabilityGrid[0])
+	w := len(walkabilityGrid)
 	grid := paths.NewGrid(w, h)
 
-	for i := 0; i < len(walkabilityGrid); i++ {
-		for j := 0; j < len(walkabilityGrid[0]); j++ {
+	for i := 0; i < w; i++ {
+		for j := 0; j < h; j++ {
 			if walkabilityGrid[i][j] {
 				grid.Get(i, j).Cost = 1
 				grid.Get(i, j).Walkable = true
