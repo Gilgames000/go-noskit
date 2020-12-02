@@ -19,6 +19,13 @@ type BazaarGateway struct {
 	isOpen        bool
 }
 
+func NewBazaarGateway(gameSocket GameSocket, itemDataStore ItemDataStore) *BazaarGateway {
+	return &BazaarGateway{
+		gameSocket:    gameSocket,
+		itemDataStore: itemDataStore,
+	}
+}
+
 func (bg *BazaarGateway) Open(npcID int) error {
 	req := bg.gameSocket.NewListener(packetsrv.NPCRequest{}.Name())
 	defer bg.gameSocket.CloseListener(req)

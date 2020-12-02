@@ -11,6 +11,10 @@ type ItemGateway struct {
 	itemDataStore ItemDataStore
 }
 
+func NewItemGateway(itemDataStore ItemDataStore) *ItemGateway {
+	return &ItemGateway{itemDataStore: itemDataStore}
+}
+
 func (ig *ItemGateway) SearchByVNum(vnum int) (entities.Item, error) {
 	return ig.itemDataStore.SearchByVNum(vnum)
 }
