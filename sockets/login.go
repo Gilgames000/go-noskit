@@ -24,11 +24,11 @@ type LoginSocket struct {
 	connectedMtx sync.RWMutex
 	isConnected  bool
 
-	parser        parser.NosPacketParser
+	parser        *parser.NosPacketParser
 	packetsPubSub *NosPacketPubSub
 }
 
-func NewLoginSocket(parser parser.NosPacketParser) *LoginSocket {
+func NewLoginSocket(parser *parser.NosPacketParser) *LoginSocket {
 	return &LoginSocket{
 		parser:        parser,
 		packetsPubSub: NewNosPacketPubSub(),
