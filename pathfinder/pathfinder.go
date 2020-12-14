@@ -51,6 +51,9 @@ func (p Pathfinder) DistanceBetween(p1, p2 entities.Point, walkabilityGrid [][]b
 
 func calculatePath(p1, p2 entities.Point, walkabilityGrid [][]bool) *paths.Path {
 	grid := fillGrid(walkabilityGrid)
+	if p1.X > grid.Width()-1 || p1.Y > grid.Height()-1 || p2.X > grid.Width() || p2.Y > grid.Height() {
+		return &paths.Path{}
+	}
 	return grid.GetPath(
 		grid.Get(p1.X, p1.Y),
 		grid.Get(p2.X, p2.Y),
