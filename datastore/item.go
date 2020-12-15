@@ -1,15 +1,13 @@
 package datastore
 
 import (
-	"strconv"
-
 	"github.com/gilgames000/go-noskit/entities"
 	"github.com/gilgames000/go-noskit/enums"
 	"github.com/gilgames000/go-noskit/errors"
 )
 
-type CSVItemLoader interface {
-	Load() ([][]string, error)
+type ItemsLoader interface {
+	Load() ([]ItemData, error)
 }
 
 type ItemData struct {
@@ -18,11 +16,11 @@ type ItemData struct {
 }
 
 type ItemDataStore struct {
-	loader CSVItemLoader
+	loader ItemsLoader
 	items  map[int]ItemData
 }
 
-func NewItemDataStore(loader CSVItemLoader) (ItemDataStore, error) {
+func NewItemDataStore(loader ItemsLoader) (ItemDataStore, error) {
 	ds := ItemDataStore{
 		loader: loader,
 		items:  make(map[int]ItemData),
@@ -33,26 +31,13 @@ func NewItemDataStore(loader CSVItemLoader) (ItemDataStore, error) {
 }
 
 func (i ItemDataStore) loadItemData() error {
-	csv, err := i.loader.Load()
+	items, err := i.loader.Load()
 	if err != nil {
 		return err
 	}
 
-	for _, line := range csv {
-		vnum, err := strconv.Atoi(line[0])
-		if err != nil {
-			return err
-		}
-
-		inventoryPocket, err := strconv.Atoi(line[1])
-		if err != nil {
-			return err
-		}
-
-		i.items[vnum] = ItemData{
-			VNum:            vnum,
-			InventoryPocket: enums.InventoryPocket(inventoryPocket),
-		}
+	for _, item := range items {
+		i.items[item.VNum] = item
 	}
 
 	return nil
