@@ -39,8 +39,8 @@ func (m MapDataStore) loadMapData(mapID int) (MapData, error) {
 		return MapData{}, err
 	}
 
-	Grid := make([]bool, size.W*size.H)
-	if err := binary.Read(r, binary.LittleEndian, &Grid); err != nil {
+	grid := make([]bool, size.W*size.H)
+	if err := binary.Read(r, binary.LittleEndian, &grid); err != nil {
 		return MapData{}, err
 	}
 
@@ -48,11 +48,12 @@ func (m MapDataStore) loadMapData(mapID int) (MapData, error) {
 	mapData.Width = int(size.W)
 	mapData.Height = int(size.H)
 	mapData.WalkabilityGrid = make([][]bool, mapData.Width)
-	for i := 0; i < mapData.Width; i++ {
+	for i := range mapData.WalkabilityGrid {
 		mapData.WalkabilityGrid[i] = make([]bool, mapData.Height)
-		for j := 0; j < mapData.Height; j++ {
-			mapData.WalkabilityGrid[i][j] = !Grid[mapData.Width*i+j]
-		}
+	}
+
+	for i := range grid {
+		mapData.WalkabilityGrid[i%mapData.Width][i/mapData.Width] = !grid[i]
 	}
 
 	return mapData, nil
