@@ -1,12 +1,7 @@
 package datastore
 
-import (
-	"encoding/binary"
-	"io"
-)
-
-type RawMapLoader interface {
-	Load(mapID int) (io.Reader, error)
+type MapLoader interface {
+	Load(mapID int) (MapData, error)
 }
 
 type MapData struct {
@@ -15,53 +10,20 @@ type MapData struct {
 }
 
 type MapDataStore struct {
-	loader RawMapLoader
+	loader MapLoader
 	maps   map[int]MapData
 }
 
-func NewMapDataStore(loader RawMapLoader) MapDataStore {
+func NewMapDataStore(loader MapLoader) MapDataStore {
 	return MapDataStore{
 		loader: loader,
 		maps:   make(map[int]MapData),
 	}
 }
 
-func (m MapDataStore) loadMapData(mapID int) (MapData, error) {
-	r, err := m.loader.Load(mapID)
-	if err != nil {
-		return MapData{}, err
-	}
-
-	var size struct {
-		W, H uint16
-	}
-	if err := binary.Read(r, binary.LittleEndian, &size); err != nil {
-		return MapData{}, err
-	}
-
-	grid := make([]bool, size.W*size.H)
-	if err := binary.Read(r, binary.LittleEndian, &grid); err != nil {
-		return MapData{}, err
-	}
-
-	var mapData MapData
-	mapData.Width = int(size.W)
-	mapData.Height = int(size.H)
-	mapData.WalkabilityGrid = make([][]bool, mapData.Width)
-	for i := range mapData.WalkabilityGrid {
-		mapData.WalkabilityGrid[i] = make([]bool, mapData.Height)
-	}
-
-	for i := range grid {
-		mapData.WalkabilityGrid[i%mapData.Width][i/mapData.Width] = !grid[i]
-	}
-
-	return mapData, nil
-}
-
 func (m MapDataStore) retrieveMap(mapID int) (MapData, error) {
 	if _, ok := m.maps[mapID]; !ok {
-		mapData, err := m.loadMapData(mapID)
+		mapData, err := m.loader.Load(mapID)
 		if err != nil {
 			return MapData{}, err
 		}
