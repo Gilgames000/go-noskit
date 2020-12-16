@@ -36,7 +36,7 @@ type BazaarGateway interface {
 	SearchItemsByVNumAndPage(vnums []int, page int) ([]entities.BazaarItem, error)
 }
 
-// ItemGateway provides methods that retrive informations about the items
+// ItemGateway provides methods that retrieve information about the items
 // in the game.
 type ItemGateway interface {
 	SearchByVNum(vnum int) (entities.Item, error)
