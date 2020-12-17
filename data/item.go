@@ -2,6 +2,7 @@ package data
 
 import (
 	"encoding/csv"
+	"io"
 	"os"
 	"path/filepath"
 	"strconv"
@@ -24,12 +25,7 @@ func NewCSVItemsLoader(itemsDatPath string, hasHeader bool) *CSVItemsLoader {
 	}
 }
 
-func (l *CSVItemsLoader) Load() ([]datastore.ItemData, error) {
-	f, err := os.Open(filepath.Clean(l.itemsDatPath))
-	if err != nil {
-		return []datastore.ItemData{}, err
-	}
-
+func (l *CSVItemsLoader) csvToItemData(f io.Reader) ([]datastore.ItemData, error) {
 	r := csv.NewReader(f)
 	all, err := r.ReadAll()
 	if err != nil {
@@ -59,4 +55,13 @@ func (l *CSVItemsLoader) Load() ([]datastore.ItemData, error) {
 	}
 
 	return items, nil
+}
+
+func (l *CSVItemsLoader) Load() ([]datastore.ItemData, error) {
+	f, err := os.Open(filepath.Clean(l.itemsDatPath))
+	if err != nil {
+		return []datastore.ItemData{}, err
+	}
+
+	return l.csvToItemData(f)
 }
