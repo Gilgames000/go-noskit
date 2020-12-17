@@ -31,7 +31,7 @@ var rawToMapDataTests = []struct {
 func TestRawToMapData(t *testing.T) {
 	l := NewRawMapLoader("dummy path")
 	for i, tt := range rawToMapDataTests {
-		t.Run(fmt.Sprintf("walkability test %d", i), func(t *testing.T) {
+		t.Run(fmt.Sprintf("%d", i), func(t *testing.T) {
 			data, err := l.rawToMapData(bytes.NewReader(tt.rawMapData))
 			if err != nil {
 				t.Errorf("test raw to map data failed with error: %s", err.Error())
