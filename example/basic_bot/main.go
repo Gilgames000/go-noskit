@@ -140,8 +140,28 @@ func main() {
 		fmt.Printf("Login error: %s\n", err.Error())
 		os.Exit(-1)
 	}
+	var s actions.GameServer
+	if lang == "de" {
 
-	characters, err := userInteractor.Connect(servers[1].Channels[2])
+		if servers[0].Name == "Ancelloan" {
+			s = servers[0]
+		}
+		if servers[1].Name == "Ancelloan" {
+			s = servers[1]
+		}
+		if servers[2].Name == "Ancelloan" {
+			s = servers[2]
+		}
+	} else if lang == "it" {
+		if servers[0].Name == "Flare" {
+			s = servers[0]
+		}
+		if servers[1].Name == "Flare" {
+			s = servers[1]
+		}
+	}
+
+	characters, err := userInteractor.Connect(s.Channels[2])
 	if err != nil {
 		fmt.Printf("Connect error: %s\n", err.Error())
 		os.Exit(-1)
