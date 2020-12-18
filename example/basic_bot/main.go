@@ -18,14 +18,14 @@ import (
 	"github.com/gilgames000/go-noskit/sockets"
 )
 
-type DummyGameClientGateway struct {
+type GameClientGateway struct {
 }
 
-func (d *DummyGameClientGateway) Version() string {
+func (d *GameClientGateway) Version() string {
 	return os.Getenv("NOSTALE_CLIENT_VERSION")
 }
 
-func (d *DummyGameClientGateway) Hash() string {
+func (d *GameClientGateway) Hash() string {
 	return os.Getenv("NOSTALE_CLIENT_HASH")
 }
 
@@ -107,26 +107,29 @@ func main() {
 		Locale:           os.Getenv("NOSTALE_LOCALE"),
 	}
 
+	characterGateway := gamestate.NewCharacterGateway(gameSocket, mapDataStore, pf)
+	mapGateway := gamestate.NewMapGateway(gameSocket, mapDataStore, pf)
+
 	userInteractor := actions.NewUserInteractor(
 		gamestate.NewUserGateway(
 			&gfclient.GFClient{},
 			sockets.NewLoginSocket(packetParser),
 			gameSocket,
-			&DummyGameClientGateway{},
+			&GameClientGateway{},
 		),
 	)
 
 	characterInteractor := actions.NewCharacterInteractor(
-		gamestate.NewCharacterGateway(gameSocket, mapDataStore, pf),
-		gamestate.NewMapGateway(gameSocket, mapDataStore, pf),
+		characterGateway,
+		mapGateway,
 		gamestate.NewCharacterManagementGateway(gameSocket),
 	)
 
 	bazaarInteractor := actions.NewBazaarInteractor(
 		gamestate.NewItemGateway(itemDataStore),
 		gamestate.NewBazaarGateway(gameSocket, itemDataStore),
-		gamestate.NewCharacterGateway(gameSocket, mapDataStore, pf),
-		gamestate.NewMapGateway(gameSocket, mapDataStore, pf),
+		characterGateway,
+		mapGateway,
 		gamestate.NewNPCGateway(gameSocket),
 		gamestate.NewShopGateway(gameSocket),
 	)
