@@ -11,6 +11,7 @@ require (
 	github.com/parnurzeal/gorequest v0.2.16
 	github.com/pkg/errors v0.9.1
 	github.com/smartystreets/goconvey v1.6.4 // indirect
+	github.com/spf13/afero v1.5.1
 	golang.org/x/net v0.0.0-20200421231249-e086a090c8fd // indirect
 	moul.io/http2curl v1.0.0 // indirect
 )

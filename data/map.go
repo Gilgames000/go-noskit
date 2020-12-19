@@ -3,21 +3,26 @@ package data
 import (
 	"encoding/binary"
 	"io"
-	"os"
 	"path/filepath"
 	"strconv"
 
 	"github.com/gilgames000/go-noskit/datastore"
+
+	"github.com/spf13/afero"
 )
 
 var _ datastore.MapLoader = RawMapLoader{}
 
 type RawMapLoader struct {
+	filesystem    afero.Fs
 	mapsDirectory string
 }
 
-func NewRawMapLoader(mapsDirectory string) *RawMapLoader {
-	return &RawMapLoader{mapsDirectory: mapsDirectory}
+func NewRawMapLoader(filesystem afero.Fs, mapsDirectory string) *RawMapLoader {
+	return &RawMapLoader{
+		filesystem:    filesystem,
+		mapsDirectory: mapsDirectory,
+	}
 }
 
 func (l RawMapLoader) rawToMapData(r io.Reader) (datastore.MapData, error) {
@@ -49,7 +54,7 @@ func (l RawMapLoader) rawToMapData(r io.Reader) (datastore.MapData, error) {
 }
 
 func (l RawMapLoader) Load(mapID int) (datastore.MapData, error) {
-	f, err := os.Open(filepath.Join(l.mapsDirectory, strconv.Itoa(mapID)))
+	f, err := l.filesystem.Open(filepath.Join(l.mapsDirectory, strconv.Itoa(mapID)))
 	if err != nil {
 		return datastore.MapData{}, err
 	}
