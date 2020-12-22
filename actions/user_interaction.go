@@ -75,7 +75,7 @@ func (ui *UserInteractor) Login(user User, serverLang string, countryID enums.Co
 	accountName, sessionNum, servers, err := ui.user.ConnectToLoginServer(
 		user,
 		loginCode,
-		"login.nostale.gfsrv.net:"+getLoginPort(countryID),
+		"login.nostale.gfsrv.net:"+string(getLoginPort(countryID)),
 		countryID,
 	)
 	if err != nil {
@@ -103,7 +103,7 @@ func (ui *UserInteractor) Connect(channel ServerChannel) ([]AccountCharacter, er
 	return characters, err
 }
 
-func getLoginPort(countryID enums.CountryID) string {
+func getLoginPort(countryID enums.CountryID) enums.LoginPort {
 	switch countryID {
 	case enums.EN:
 		return enums.LoginPortEN

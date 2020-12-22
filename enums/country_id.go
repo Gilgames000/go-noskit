@@ -3,13 +3,13 @@ package enums
 type CountryID int
 
 const (
-	EN = 0
-	DE = 1
-	FR = 2
-	IT = 3
-	PL = 4
-	ES = 5
-	CZ = 6
-	RU = 7
-	TR = 8
+	EN CountryID = 0
+	DE CountryID = 1
+	FR CountryID = 2
+	IT CountryID = 3
+	PL CountryID = 4
+	ES CountryID = 5
+	CZ CountryID = 6
+	RU CountryID = 7
+	TR CountryID = 8
 )
