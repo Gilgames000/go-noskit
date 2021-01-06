@@ -7,6 +7,7 @@ require (
 	github.com/alecthomas/participle v0.4.1
 	github.com/elazarl/goproxy v0.0.0-20200424133023-84349a151dd4 // indirect
 	github.com/gilgames000/go-noscrypto v0.0.0-20190515120617-7096d4f3eee5
+	github.com/go-sql-driver/mysql v1.5.0
 	github.com/google/go-cmp v0.4.0
 	github.com/parnurzeal/gorequest v0.2.16
 	github.com/pkg/errors v0.9.1

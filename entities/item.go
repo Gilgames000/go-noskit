@@ -1,6 +1,10 @@
 package entities
 
-import "github.com/gilgames000/go-noskit/enums"
+import (
+	"fmt"
+
+	"github.com/gilgames000/go-noskit/enums"
+)
 
 // Item holds the info about a specific item.
 type Item struct {
@@ -30,4 +34,8 @@ type BazaarItem struct {
 	MinutesLeft int
 	SaleStatus  enums.SaleStatus
 	SoldAmount  int
+}
+
+func (b BazaarItem) String() string {
+	return fmt.Sprintf("[%d, %d, %d, %d,%d]", b.ItemInstance, b.Price, b.MinutesLeft, b.SaleStatus, b.SoldAmount)
 }

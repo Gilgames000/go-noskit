@@ -1,9 +1,14 @@
 package main
 
 import (
+	"database/sql"
 	"fmt"
+	"log"
 	"os"
+	"strconv"
 	"time"
+
+	_ "github.com/go-sql-driver/mysql"
 
 	"github.com/gilgames000/go-noskit/actions"
 	"github.com/gilgames000/go-noskit/data"
@@ -77,6 +82,7 @@ func getCountryID(lang string) enums.CountryID {
 }
 
 func main() {
+
 	packetParser := parser.New()
 	registerPackets(packetParser)
 
@@ -85,7 +91,8 @@ func main() {
 	mapDataStore := datastore.NewMapDataStore(
 		data.NewRawMapLoader(os.Getenv("NOSTALE_MAPS_DIRECTORY")),
 	)
-
+	st := os.Getenv("NOSTALE_MAPS_DIRECTORY")
+	fmt.Println(st)
 	itemDataStore, err := datastore.NewItemDataStore(
 		data.NewCSVItemsLoader(
 			os.Getenv("NOSTALE_ITEMS_CSV_PATH"),
@@ -183,20 +190,65 @@ func main() {
 		fmt.Printf("Walk error: %s\n", err.Error())
 		os.Exit(-1)
 	}
+	time.Sleep(1 * time.Second)
 
 	err = bazaarInteractor.Open()
 	if err != nil {
 		fmt.Printf("Bazaar error: %s\n", err.Error())
 		os.Exit(-1)
 	}
+	time.Sleep(1 * time.Second)
+	var db *sql.DB
+	var insert *sql.Rows
+	d := "d0321167:dummeskind@tcp(85.13.145.183)/d0321167"
 
-	res, err := bazaarInteractor.SearchItemByVNum(2282)
-	if err != nil {
-		fmt.Printf("Bazaar error: %s\n", err.Error())
-		os.Exit(-1)
+	db, err = sql.Open("mysql", d)
+	//Here starts the bazar lookup loop
+	var items []int = []int{2282, 1030, 2283, 2196, 2284, 2285, 1012, 1011, 1013, 1014, 1029, 5060, 315, 316, 317, 318, 319, 320, 321, 322}
+
+	for _, v := range items {
+
+		query := "CREATE TABLE IF NOT EXISTS `" + strconv.Itoa(v) + "` ( Date datetime, Price int )"
+		insert, err = db.Query(query)
+		// if there is an error inserting, handle it
+		if err != nil {
+			panic(err.Error())
+		}
+		// be careful deferring Queries if you are using transactions
+		defer insert.Close()
+	}
+	for {
+
+		for _, v := range items {
+			res, err := bazaarInteractor.SearchItemByVNum(v)
+			if err != nil {
+				fmt.Printf("Bazaar error: %s\n", err.Error())
+				os.Exit(-1)
+			}
+
+			Price := strconv.Itoa(res[0].Price)
+			VNUM := strconv.Itoa(v)
+			fmt.Println(VNUM)
+			fmt.Println(Price)
+			fmt.Println("")
+
+			if err != nil {
+				log.Printf("Error %s when opening DB\n", err)
+				return
+			}
+
+			t := time.Now().Format("2006-01-02 15:04:05")
+			insert, err = db.Query("INSERT INTO `" + VNUM + "`(`Date`, `Price`) VALUES ( '" + t + "'," + Price + ")")
+			// if there is an error inserting, handle it
+			if err != nil {
+				panic(err.Error())
+			}
+			// be careful deferring Queries if you are using transactions
+			insert.Close()
+			time.Sleep(5 * time.Second)
+
+		}
+		time.Sleep(60 * 15 * time.Second)
 	}
 
-	fmt.Println(res)
-
-	select {}
 }
