@@ -189,6 +189,7 @@ func main() {
 		fmt.Printf("Bazaar error: %s\n", err.Error())
 		os.Exit(-1)
 	}
+	time.Sleep(1 * time.Second)
 
 	res, err := bazaarInteractor.SearchItemByVNum(2282)
 	if err != nil {
