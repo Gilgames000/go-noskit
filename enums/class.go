@@ -3,9 +3,9 @@ package enums
 type Class int
 
 const (
-	Adventurer    = 0
-	Swordsman     = 1
-	Archer        = 2
-	Magician      = 3
-	MartialArtist = 4
+	Adventurer    Class = 0
+	Swordsman     Class = 1
+	Archer        Class = 2
+	Magician      Class = 3
+	MartialArtist Class = 4
 )

@@ -3,10 +3,10 @@ package enums
 type InventoryPocket int
 
 const (
-	Equipment  = 0
-	Main       = 1
-	Etc        = 2
-	Miniland   = 3
-	Specialist = 6
-	Costume    = 7
+	Equipment  InventoryPocket = 0
+	Main       InventoryPocket = 1
+	Etc        InventoryPocket = 2
+	Miniland   InventoryPocket = 3
+	Specialist InventoryPocket = 6
+	Costume    InventoryPocket = 7
 )

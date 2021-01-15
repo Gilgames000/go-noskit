@@ -16,6 +16,8 @@ import (
 	packetsrv "github.com/gilgames000/go-noskit/packets/server"
 	"github.com/gilgames000/go-noskit/pathfinder"
 	"github.com/gilgames000/go-noskit/sockets"
+
+	"github.com/spf13/afero"
 )
 
 type GameClientGateway struct {
@@ -77,17 +79,20 @@ func getCountryID(lang string) enums.CountryID {
 }
 
 func main() {
+	fs := afero.NewOsFs()
+
 	packetParser := parser.New()
 	registerPackets(packetParser)
 
 	pf := pathfinder.New()
 
 	mapDataStore := datastore.NewMapDataStore(
-		data.NewRawMapLoader(os.Getenv("NOSTALE_MAPS_DIRECTORY")),
+		data.NewRawMapLoader(fs, os.Getenv("NOSTALE_MAPS_DIRECTORY")),
 	)
 
 	itemDataStore, err := datastore.NewItemDataStore(
 		data.NewCSVItemsLoader(
+			fs,
 			os.Getenv("NOSTALE_ITEMS_CSV_PATH"),
 			os.Getenv("NOSTALE_ITEMS_CSV_HAS_HEADER") == "true",
 		),

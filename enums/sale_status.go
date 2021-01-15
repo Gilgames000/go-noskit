@@ -3,8 +3,8 @@ package enums
 type SaleStatus int
 
 const (
-	All     int = 0
-	Ongoing int = 1
-	Sold    int = 2
-	Expired int = 3
+	All     SaleStatus = 0
+	Ongoing SaleStatus = 1
+	Sold    SaleStatus = 2
+	Expired SaleStatus = 3
 )

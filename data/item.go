@@ -3,36 +3,39 @@ package data
 import (
 	"encoding/csv"
 	"io"
-	"os"
 	"path/filepath"
 	"strconv"
 
 	"github.com/gilgames000/go-noskit/datastore"
 	"github.com/gilgames000/go-noskit/enums"
+
+	"github.com/spf13/afero"
 )
 
 var _ datastore.ItemsLoader = &CSVItemsLoader{}
 
 type CSVItemsLoader struct {
+	filesystem   afero.Fs
 	itemsDatPath string
 	hasHeader    bool
 }
 
-func NewCSVItemsLoader(itemsDatPath string, hasHeader bool) *CSVItemsLoader {
+func NewCSVItemsLoader(filesystem afero.Fs, itemsDatPath string, hasHeader bool) *CSVItemsLoader {
 	return &CSVItemsLoader{
+		filesystem:   filesystem,
 		itemsDatPath: itemsDatPath,
 		hasHeader:    hasHeader,
 	}
 }
 
-func (l *CSVItemsLoader) csvToItemData(f io.Reader) ([]datastore.ItemData, error) {
+func CSVToItemData(f io.Reader, hasHeader bool) ([]datastore.ItemData, error) {
 	r := csv.NewReader(f)
 	all, err := r.ReadAll()
 	if err != nil {
 		return []datastore.ItemData{}, err
 	}
 
-	if l.hasHeader {
+	if hasHeader {
 		all = all[1:]
 	}
 
@@ -58,10 +61,10 @@ func (l *CSVItemsLoader) csvToItemData(f io.Reader) ([]datastore.ItemData, error
 }
 
 func (l *CSVItemsLoader) Load() ([]datastore.ItemData, error) {
-	f, err := os.Open(filepath.Clean(l.itemsDatPath))
+	f, err := l.filesystem.Open(filepath.Clean(l.itemsDatPath))
 	if err != nil {
 		return []datastore.ItemData{}, err
 	}
 
-	return l.csvToItemData(f)
+	return CSVToItemData(f, l.hasHeader)
 }
