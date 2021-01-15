@@ -6,8 +6,9 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/alecthomas/participle/lexer"
 	"github.com/gilgames000/go-noskit/packets"
+
+	"github.com/alecthomas/participle/lexer"
 )
 
 // BazaarBuyListResults packet
