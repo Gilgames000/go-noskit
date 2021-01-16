@@ -16,6 +16,7 @@ import (
 	packetsrv "github.com/gilgames000/go-noskit/packets/server"
 	"github.com/gilgames000/go-noskit/pathfinder"
 	"github.com/gilgames000/go-noskit/sockets"
+	"github.com/joho/godotenv"
 
 	"github.com/spf13/afero"
 )
@@ -51,6 +52,7 @@ func registerPackets(packetParser *parser.NosPacketParser) {
 	packetParser.RegisterPacket(packetsrv.Shop{})
 	packetParser.RegisterPacket(packetsrv.NPCInfo{})
 	packetParser.RegisterPacket(packetsrv.WindowOpen{})
+	packetParser.RegisterPacket(packetsrv.InvPackageResults1{})
 }
 
 func getCountryID(lang string) enums.CountryID {
@@ -79,7 +81,9 @@ func getCountryID(lang string) enums.CountryID {
 }
 
 func main() {
+	fmt.Println("Initializing")
 	fs := afero.NewOsFs()
+	godotenv.Load()
 
 	packetParser := parser.New()
 	registerPackets(packetParser)
@@ -173,12 +177,26 @@ func main() {
 	}
 
 	time.Sleep(1250 * time.Millisecond)
+
+	l := gameSocket.NewListener(packetsrv.InvPackageResults1{}.Name())
+	var inv packetsrv.InvPackageResults1
+
 	err = characterInteractor.JoinGame(characters[0].Slot)
 	if err != nil {
 		fmt.Printf("JoinGame error: %s\n", err.Error())
 		os.Exit(-1)
 	}
+	select {
+	case p := <-l:
+		var ok bool
+		inv, ok = p.(packetsrv.InvPackageResults1)
 
+		if !ok {
+			fmt.Print("Error")
+		}
+	case <-time.After(5 * time.Second):
+		fmt.Print("Error")
+	}
 	time.Sleep(5 * time.Second)
 	err = characterInteractor.WalkTo(entities.Point{
 		X: 9,
@@ -196,13 +214,33 @@ func main() {
 	}
 	time.Sleep(1 * time.Second)
 
-	res, err := bazaarInteractor.SearchItemByVNum(2282)
-	if err != nil {
-		fmt.Printf("Bazaar error: %s\n", err.Error())
-		os.Exit(-1)
+	// res, err := bazaarInteractor.SearchItemByVNum(2282)
+	// if err != nil {
+	// 	fmt.Printf("Bazaar error: %s\n", err.Error())
+	// 	os.Exit(-1)
+	// }
+
+	// fmt.Println(res)
+	m := map[string]func(int) ([]entities.BazaarItem, error){
+		"searchBazaar": bazaarInteractor.SearchItemByVNum,
+	}
+	var name string
+	var vNum int
+	for {
+		fmt.Println("Ready for Input:")
+		fmt.Scanf("%s %d", &name, &vNum)
+		if name == "searchBazaar" {
+			z, _ := someOtherFunction(vNum, m[name])
+			fmt.Println(z)
+			time.Sleep(3 * time.Second)
+
+		} else if name == "inv1" {
+			fmt.Println(inv)
+		}
 	}
 
-	fmt.Println(res)
+}
 
-	select {}
+func someOtherFunction(a int, f func(int) ([]entities.BazaarItem, error)) ([]entities.BazaarItem, error) {
+	return f(a)
 }

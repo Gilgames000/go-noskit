@@ -35,13 +35,13 @@ type InvPackageItem1 struct {
 
 func (p InvPackageItem1) String() string {
 	str := fmt.Sprintf(
-		"%d %d %d",
+		"%d %d %d \n",
 		p.Slot,
 		p.ItemID,
 		p.Amount,
 	)
 
-	return fmt.Sprintf("%s %s", str)
+	return fmt.Sprintf("%s", str)
 }
 
 func (p InvPackageResults1) String() string {
