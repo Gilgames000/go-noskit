@@ -1,20 +1,15 @@
-package datastore
+package datastore_test
 
 import (
 	"fmt"
 	"testing"
 
+	"github.com/gilgames000/go-noskit/datastore"
 	"github.com/gilgames000/go-noskit/entities"
+	"github.com/gilgames000/go-noskit/testdoubles"
 
 	"github.com/google/go-cmp/cmp"
 )
-
-type ItemsLoaderStub struct {
-}
-
-func (ItemsLoaderStub) Load() ([]ItemData, error) {
-	return []ItemData{{VNum: 5, InventoryPocket: 2}}, nil
-}
 
 var itemSearchByVNumTests = []struct {
 	vnum       int
@@ -39,7 +34,7 @@ var itemSearchByVNumTests = []struct {
 func TestItemSearchByVNum(t *testing.T) {
 	for i, tt := range itemSearchByVNumTests {
 		t.Run(fmt.Sprintf("%d", i), func(t *testing.T) {
-			ds, err := NewItemDataStore(ItemsLoaderStub{})
+			ds, err := datastore.NewItemDataStore(testdoubles.ItemsLoaderStub{})
 			if err != nil {
 				t.Errorf("%s", err.Error())
 				return

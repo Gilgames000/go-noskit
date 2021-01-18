@@ -1,9 +1,10 @@
-package data
+package data_test
 
 import (
 	"fmt"
 	"testing"
 
+	"github.com/gilgames000/go-noskit/data"
 	"github.com/gilgames000/go-noskit/datastore"
 	"github.com/gilgames000/go-noskit/errors"
 
@@ -58,7 +59,7 @@ func TestRawMapLoad(t *testing.T) {
 				return
 			}
 
-			l := NewRawMapLoader(fs, "")
+			l := data.NewRawMapLoader(fs, "")
 
 			mapData, err := l.Load(0)
 			if err != nil {

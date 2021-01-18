@@ -1,9 +1,10 @@
-package data
+package data_test
 
 import (
 	"fmt"
 	"testing"
 
+	"github.com/gilgames000/go-noskit/data"
 	"github.com/gilgames000/go-noskit/datastore"
 	"github.com/gilgames000/go-noskit/errors"
 
@@ -70,7 +71,7 @@ func TestCSVItemsLoad(t *testing.T) {
 				return
 			}
 
-			l := NewCSVItemsLoader(fs, "items.csv", tt.hasHeader)
+			l := data.NewCSVItemsLoader(fs, "items.csv", tt.hasHeader)
 			itemData, err := l.Load()
 
 			if err != nil {

@@ -1,37 +1,39 @@
-package entities
+package entities_test
 
 import (
 	"strconv"
 	"testing"
+
+	"github.com/gilgames000/go-noskit/entities"
 )
 
 var pointDistanceFromTests = []struct {
-	p1, p2   Point
+	p1, p2   entities.Point
 	distance int
 }{
 	{
-		p1:       Point{0, 0},
-		p2:       Point{0, 0},
+		p1:       entities.Point{},
+		p2:       entities.Point{},
 		distance: 0,
 	},
 	{
-		p1:       Point{3, 4},
-		p2:       Point{3, 4},
+		p1:       entities.Point{X: 3, Y: 4},
+		p2:       entities.Point{X: 3, Y: 4},
 		distance: 0,
 	},
 	{
-		p1:       Point{2, 7},
-		p2:       Point{6, 6},
+		p1:       entities.Point{X: 2, Y: 7},
+		p2:       entities.Point{X: 6, Y: 6},
 		distance: 4,
 	},
 	{
-		p1:       Point{-1, -1},
-		p2:       Point{-1, -1},
+		p1:       entities.Point{X: -1, Y: -1},
+		p2:       entities.Point{X: -1, Y: -1},
 		distance: 0,
 	},
 	{
-		p1:       Point{-4, 5},
-		p2:       Point{9, -2},
+		p1:       entities.Point{X: -4, Y: 5},
+		p2:       entities.Point{X: 9, Y: -2},
 		distance: 14,
 	},
 }

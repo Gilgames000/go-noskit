@@ -1,45 +1,25 @@
-package datastore
+package datastore_test
 
 import (
 	"fmt"
 	"testing"
 
-	"github.com/gilgames000/go-noskit/errors"
+	"github.com/gilgames000/go-noskit/datastore"
+	"github.com/gilgames000/go-noskit/testdoubles"
 
 	"github.com/google/go-cmp/cmp"
 )
 
-type MapLoaderStub struct {
-}
-
-func (MapLoaderStub) Load(mapID int) (MapData, error) {
-	return MapData{
-		Width:  2,
-		Height: 3,
-		WalkabilityGrid: [][]bool{
-			{false, true, false},
-			{true, true, false},
-		},
-	}, nil
-}
-
-type FailingMapLoaderStub struct {
-}
-
-func (FailingMapLoaderStub) Load(mapID int) (MapData, error) {
-	return MapData{}, errors.New("map not found")
-}
-
 var mapDataTests = []struct {
-	mapLoader  MapLoader
+	mapLoader  datastore.MapLoader
 	mapID      int
-	mapData    MapData
+	mapData    datastore.MapData
 	shouldWork bool
 }{
 	{
-		MapLoaderStub{},
+		testdoubles.MapLoaderStub{},
 		2,
-		MapData{
+		datastore.MapData{
 			Width:  2,
 			Height: 3,
 			WalkabilityGrid: [][]bool{
@@ -50,9 +30,9 @@ var mapDataTests = []struct {
 		true,
 	},
 	{
-		FailingMapLoaderStub{},
+		testdoubles.FailingMapLoaderStub{},
 		2,
-		MapData{},
+		datastore.MapData{},
 		false,
 	},
 }
@@ -60,7 +40,7 @@ var mapDataTests = []struct {
 func TestMapWalkabilityGrid(t *testing.T) {
 	for i, tt := range mapDataTests {
 		t.Run(fmt.Sprintf("%d", i), func(t *testing.T) {
-			ds := NewMapDataStore(tt.mapLoader)
+			ds := datastore.NewMapDataStore(tt.mapLoader)
 			walkabilityGrid, err := ds.WalkabilityGrid(tt.mapID)
 			if tt.shouldWork && err != nil {
 				t.Errorf("%s", err.Error())
@@ -73,7 +53,7 @@ func TestMapWalkabilityGrid(t *testing.T) {
 func TestMapSize(t *testing.T) {
 	for i, tt := range mapDataTests {
 		t.Run(fmt.Sprintf("%d", i), func(t *testing.T) {
-			ds := NewMapDataStore(tt.mapLoader)
+			ds := datastore.NewMapDataStore(tt.mapLoader)
 			w, h, err := ds.Size(tt.mapID)
 			if tt.shouldWork && err != nil {
 				t.Errorf("%s", err.Error())

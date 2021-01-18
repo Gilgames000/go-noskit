@@ -1,9 +1,11 @@
-package pathfinder
+package pathfinder_test
 
 import (
 	"fmt"
-	"github.com/gilgames000/go-noskit/entities"
 	"testing"
+
+	"github.com/gilgames000/go-noskit/entities"
+	"github.com/gilgames000/go-noskit/pathfinder"
 )
 
 var mapAllWalkable = [][]bool{
@@ -56,25 +58,25 @@ var pathfinderTests = []struct {
 	walkabilityGrid [][]bool
 	shouldWork      bool
 }{
-	{entities.Point{0, 0}, entities.Point{4, 3}, mapAllWalkable, true},
-	{entities.Point{2, 3}, entities.Point{3, 5}, mapAllWalkable, false},
-	{entities.Point{4, 2}, entities.Point{4, 2}, mapAllWalkable, true},
-	{entities.Point{0, 0}, entities.Point{4, 3}, mapOuterWalls, false},
-	{entities.Point{2, 3}, entities.Point{3, 5}, mapOuterWalls, false},
-	{entities.Point{4, 2}, entities.Point{4, 2}, mapOuterWalls, true},
-	{entities.Point{0, 0}, entities.Point{4, 3}, mapHorizontalSplit, false},
-	{entities.Point{3, 1}, entities.Point{0, 1}, mapHorizontalSplit, true},
-	{entities.Point{4, 1}, entities.Point{4, 1}, mapHorizontalSplit, true},
-	{entities.Point{0, 0}, entities.Point{4, 3}, mapWithObstacle, true},
-	{entities.Point{3, 1}, entities.Point{0, 1}, mapWithObstacle, true},
-	{entities.Point{4, 1}, entities.Point{4, 1}, mapWithObstacle, true},
-	{entities.Point{0, 0}, entities.Point{4, 3}, mapNotWalkable, false},
-	{entities.Point{2, 3}, entities.Point{3, 5}, mapNotWalkable, false},
-	{entities.Point{4, 2}, entities.Point{4, 2}, mapNotWalkable, true},
+	{entities.Point{}, entities.Point{X: 4, Y: 3}, mapAllWalkable, true},
+	{entities.Point{}, entities.Point{X: 4, Y: 3}, mapOuterWalls, false},
+	{entities.Point{}, entities.Point{X: 4, Y: 3}, mapHorizontalSplit, false},
+	{entities.Point{}, entities.Point{X: 4, Y: 3}, mapWithObstacle, true},
+	{entities.Point{}, entities.Point{X: 4, Y: 3}, mapNotWalkable, false},
+	{entities.Point{X: 3, Y: 1}, entities.Point{Y: 1}, mapWithObstacle, true},
+	{entities.Point{X: 3, Y: 1}, entities.Point{Y: 1}, mapHorizontalSplit, true},
+	{entities.Point{X: 2, Y: 3}, entities.Point{X: 3, Y: 5}, mapAllWalkable, false},
+	{entities.Point{X: 4, Y: 2}, entities.Point{X: 4, Y: 2}, mapAllWalkable, true},
+	{entities.Point{X: 2, Y: 3}, entities.Point{X: 3, Y: 5}, mapOuterWalls, false},
+	{entities.Point{X: 4, Y: 2}, entities.Point{X: 4, Y: 2}, mapOuterWalls, true},
+	{entities.Point{X: 4, Y: 1}, entities.Point{X: 4, Y: 1}, mapHorizontalSplit, true},
+	{entities.Point{X: 4, Y: 1}, entities.Point{X: 4, Y: 1}, mapWithObstacle, true},
+	{entities.Point{X: 2, Y: 3}, entities.Point{X: 3, Y: 5}, mapNotWalkable, false},
+	{entities.Point{X: 4, Y: 2}, entities.Point{X: 4, Y: 2}, mapNotWalkable, true},
 }
 
 func TestCalculatePath(t *testing.T) {
-	pf := New()
+	pf := pathfinder.New()
 	for i, tt := range pathfinderTests {
 		t.Run(fmt.Sprintf("calculate path test %d", i), func(t *testing.T) {
 			_, err := pf.FindPath(tt.p1, tt.p2, tt.walkabilityGrid)
