@@ -2,7 +2,7 @@ package entities
 
 import "github.com/gilgames000/go-noskit/enums"
 
-// Player represents an actor which is controller by a person.
+// Player represents an actor which is controlled by a person.
 type Player struct {
 	Actor
 	Name   string
