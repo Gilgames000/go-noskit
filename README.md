@@ -16,5 +16,10 @@ assumes that the character is in the Marketplace Area.
 ### Documentation
 The documentation can be found [here](https://pkg.go.dev/github.com/gilgames000/go-noskit).
 
+You now need to generate an identity file using [nostale-auth repo](https://github.com/stdLemon/nostale-auth).
+You also need to have an account.json file which template can be find under example/basic_bot.
+
+Both files will have to be passed to Login method.
+
 ### License
 This software is licensed under the GNU GPL v3 license that can be found [here](https://github.com/Gilgames000/go-noskit/blob/master/LICENSE).

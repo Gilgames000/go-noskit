@@ -32,7 +32,7 @@ func NewUserInteractor(userGateway UserGateway) *UserInteractor {
 type UserGateway interface {
 	// AuthenticateGFClient authenticates the user simulating the real
 	// Gameforge Client and returns a login code.
-	AuthenticateGFClient(user User, serverLang string) (string, error)
+	AuthenticateGFClient(jsonAccountPath string, jsonIdentityPath string) (string, error)
 	// ConnectToLoginServer connects the user to the login server by
 	// using the login code retrieved from the GF servers.
 	// If the authentication is successful, a list of game servers will be
@@ -66,8 +66,8 @@ type AccountCharacter struct {
 	Name string
 }
 
-func (ui *UserInteractor) Login(user User, serverLang string, countryID enums.CountryID) ([]GameServer, error) {
-	loginCode, err := ui.user.AuthenticateGFClient(user, serverLang)
+func (ui *UserInteractor) Login(user User, jsonAccountPath string, jsonIdentityPath string, countryID enums.CountryID) ([]GameServer, error) {
+	loginCode, err := ui.user.AuthenticateGFClient(jsonAccountPath, jsonIdentityPath)
 	if err != nil {
 		return []GameServer{}, err
 	}

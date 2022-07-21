@@ -140,7 +140,7 @@ func main() {
 	)
 
 	lang := os.Getenv("NOSTALE_SERVER_LANG")
-	servers, err := userInteractor.Login(user, lang, getCountryID(lang))
+	servers, err := userInteractor.Login(user, os.Getenv("NOSTALE_JSON_ACCOUNT"), os.Getenv("NOSTALE_JSON_IDENTITY"), getCountryID(lang))
 	if err != nil {
 		fmt.Printf("Login error: %s\n", err.Error())
 		os.Exit(-1)
