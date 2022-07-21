@@ -10,29 +10,72 @@ import (
 )
 
 func TestNsTeST(t *testing.T) {
-	packet := "NsTeST  0 user 2 22416 79.110.84.76:4008:0:1.5.UK-NosCitadel 79.110.84.76:4003:2:1.1.UK-NosCitadel -1:-1:-1:10000.10000.1"
+	packet := "NsTeST  2 user 2 3 1 -99 0 -99 0 -99 0 -99 0 -99 0 -99 0 -99 0 1 1 -99 0 -99 0 -99 0 -99 0 -99 0 -99 0 -99 0 -99 0 -99 0 -99 0 -99 0 -99 0 -99 0 -99 0 -99 0 -99 0 -99 0 -99 0 -99 0 -99 0 -99 0 -99 0 -99 0 -99 0 -99 0 -99 0 -99 0 50119 79.110.84.250:4016:1:1.7.Cosmos 79.110.84.250:4015:1:1.6.Cosmos 79.110.84.250:4014:1:1.5.Cosmos 79.110.84.250:4013:1:1.4.Cosmos 79.110.84.250:4012:2:1.3.Cosmos 79.110.84.250:4011:15:1.2.Cosmos 79.110.84.250:4010:4:1.1.Cosmos -1:-1:-1:10000.10000.1"
 
 	expected := &NsTeST{
-		ServerNumber: 0,
+		ServerNumber: 2,
 		Username:     "user",
-		Unknown:      2,
-		SessionID:    22416,
+		Unknown0:     2,
+		Unknown1:     3,
+		Unknown2:     1,
+		WeirdValues:  []int{},
+		SessionID:    50119,
 		Endpoints: []ServerEndpoint{
 			{
-				Address:         "79.110.84.76",
-				Port:            4008,
-				ChannelColor:    0,
+				Address:         "79.110.84.250",
+				Port:            4016,
+				ChannelColor:    1,
 				ChannelFullness: 1,
-				ChannelNumber:   5,
-				ServerName:      "UK-NosCitadel",
+				ChannelNumber:   7,
+				ServerName:      "Cosmos",
 			},
 			{
-				Address:         "79.110.84.76",
-				Port:            4003,
+				Address:         "79.110.84.250",
+				Port:            4015,
+				ChannelColor:    1,
+				ChannelFullness: 1,
+				ChannelNumber:   6,
+				ServerName:      "Cosmos",
+			},
+			{
+				Address:         "79.110.84.250",
+				Port:            4014,
+				ChannelColor:    1,
+				ChannelFullness: 1,
+				ChannelNumber:   5,
+				ServerName:      "Cosmos",
+			},
+			{
+				Address:         "79.110.84.250",
+				Port:            4013,
+				ChannelColor:    1,
+				ChannelFullness: 1,
+				ChannelNumber:   4,
+				ServerName:      "Cosmos",
+			},
+			{
+				Address:         "79.110.84.250",
+				Port:            4012,
 				ChannelColor:    2,
 				ChannelFullness: 1,
+				ChannelNumber:   3,
+				ServerName:      "Cosmos",
+			},
+			{
+				Address:         "79.110.84.250",
+				Port:            4011,
+				ChannelColor:    15,
+				ChannelFullness: 1,
+				ChannelNumber:   2,
+				ServerName:      "Cosmos",
+			},
+			{
+				Address:         "79.110.84.250",
+				Port:            4010,
+				ChannelColor:    4,
+				ChannelFullness: 1,
 				ChannelNumber:   1,
-				ServerName:      "UK-NosCitadel",
+				ServerName:      "Cosmos",
 			},
 		},
 	}

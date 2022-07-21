@@ -41,7 +41,7 @@ func (p InvPackageItem1) String() string {
 		p.Amount,
 	)
 
-	return fmt.Sprintf("%s %s", str)
+	return fmt.Sprintf("%s", str)
 }
 
 func (p InvPackageResults1) String() string {

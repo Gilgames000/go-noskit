@@ -14,7 +14,10 @@ import (
 type NsTeST struct {
 	ServerNumber int              `json:"server_number" parser:"'NsTeST' @String"`
 	Username     string           `json:"username"      parser:"@String"`
-	Unknown      int              `json:"unknown"       parser:"@String"`
+	Unknown0     int              `json:"unknown0"       parser:"@String"`
+	Unknown1     int              `json:"unknown1"       parser:"@String"`
+	Unknown2     int              `json:"unknown2"       parser:"@String"`
+	WeirdValues  []int            `json:"weird_values"   parser:"('-99' | '0' | '1')*"`
 	SessionID    int              `json:"session_id"    parser:"@String"`
 	Endpoints    []ServerEndpoint `json:"endpoints"     parser:"@@*"`
 }

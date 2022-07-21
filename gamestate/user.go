@@ -1,7 +1,11 @@
 package gamestate
 
 import (
+	"encoding/hex"
+	"encoding/json"
 	"fmt"
+	"io/ioutil"
+	"strings"
 	"time"
 
 	"github.com/gilgames000/go-noskit/actions"
@@ -9,6 +13,7 @@ import (
 	"github.com/gilgames000/go-noskit/errors"
 	packetclt "github.com/gilgames000/go-noskit/packets/client"
 	packetsrv "github.com/gilgames000/go-noskit/packets/server"
+	gfclient_auth "github.com/stdLemon/nostale-auth"
 )
 
 var _ actions.UserGateway = &UserGateway{}
@@ -45,6 +50,13 @@ func NewUserGateway(gfClient GFClient, loginSocket LoginSocket, gameSocket GameS
 	}
 }
 
+type GfAccountData struct {
+	Email    string
+	Password string
+	Locale   string
+	Name     string
+}
+
 // GameClientGateway provides methods to retrieve information about
 // the real game client.
 type GameClientGateway interface {
@@ -52,13 +64,61 @@ type GameClientGateway interface {
 	Hash() string
 }
 
-func (ug *UserGateway) AuthenticateGFClient(user actions.User, serverLang string) (string, error) {
-	token, accountID, err := ug.gfClient.Authenticate(user, serverLang)
+func (ug *UserGateway) AuthenticateGFClient(jsonAccountPath string, jsonIdentityPath string) (string, error) {
+	content, err := ioutil.ReadFile(jsonAccountPath)
 	if err != nil {
-		return token, err
+		fmt.Println(err)
 	}
 
-	return ug.gfClient.GetLoginCodeHex(user, token, accountID)
+	identity_manager, err := gfclient_auth.NewIdentityManager(jsonIdentityPath)
+	if err != nil {
+		fmt.Println(err)
+	}
+
+	account_data := new(GfAccountData)
+	json.Unmarshal(content, account_data)
+
+	identity := identity_manager.Get()
+
+	gfclient := gfclient_auth.NewGfClient(
+		identity.Fingerprint.UserAgent,
+		"Chrome/C2.2.23.1813 (49c0acbee1)",
+		identity.Installation_id,
+	)
+
+	err = gfclient.Auth(account_data.Email, account_data.Password, account_data.Locale)
+	if err != nil {
+		fmt.Println(err)
+	}
+
+	// Get game account from user mail
+	game_account_list, err := gfclient.GetGameAccounts()
+	if err != nil {
+		fmt.Println(err)
+	}
+
+	// Find game account by its name from account file
+	game_account, err := gfclient_auth.FindGameAccount(account_data.Name, game_account_list)
+	if err != nil {
+		fmt.Println(err)
+	}
+
+	err = gfclient.Iovation(identity_manager, game_account.Id)
+	if err != nil {
+		fmt.Println(err)
+	}
+
+	code, err := gfclient.Codes(identity_manager, game_account.Id, game_account.GameId)
+	if err != nil {
+		fmt.Println(err)
+	}
+	// fmt.Println("code: " + code)
+	identity_manager.Save()
+
+	encoded_code := strings.ToUpper(hex.EncodeToString([]byte(code)))
+	// fmt.Println(encoded_code)
+
+	return encoded_code, err
 }
 
 func (ug *UserGateway) ConnectToLoginServer(user actions.User, loginCode, address string, countryID enums.CountryID) (accountName string, sessionID int, servers []actions.GameServer, err error) {
